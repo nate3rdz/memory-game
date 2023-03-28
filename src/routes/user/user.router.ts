@@ -1,7 +1,12 @@
 import express from 'express';
 import {create, del, get, list, patch} from "./user.controller.js";
 import {VALIDATION_TARGET, Validator} from "../../middlewares/validation.middleware.js";
-import {searchByIdValidator, searchFilterValidator, validator} from "../../validators/user.validator.js";
+import {
+    searchByIdValidator,
+    searchFilterValidator,
+    updateValidator,
+    validator
+} from "../../validators/user.validator.js";
 
 export const routes = {
     root: '/user',
@@ -53,7 +58,7 @@ const userRouter = express.Router();
  */
 userRouter.post(routes.post, new Validator(validator, VALIDATION_TARGET.BODY).validate(), create);
 
-userRouter.patch(routes.patch, new Validator(validator, VALIDATION_TARGET.BODY).validate(), new Validator(searchByIdValidator, VALIDATION_TARGET.PARAMS).validate(), patch);
+userRouter.patch(routes.patch, new Validator(updateValidator, VALIDATION_TARGET.BODY).validate(), new Validator(searchByIdValidator, VALIDATION_TARGET.PARAMS).validate(), patch);
 
 userRouter.get(routes.list, new Validator(searchFilterValidator, VALIDATION_TARGET.QUERY).validate(), list);
 userRouter.get(routes.get, new Validator(searchByIdValidator, VALIDATION_TARGET.PARAMS).validate(), get);

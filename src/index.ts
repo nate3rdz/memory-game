@@ -5,6 +5,8 @@ import swaggerUi from 'swagger-ui-express'
 import morgan from 'morgan';
 import * as dotenv from 'dotenv';
 import userRouter, {routes as userRoutes} from './routes/user/user.router.js';
+import matchRouter, {routes as matchRoutes} from './routes/match/match.router.js';
+import rankingsRouter, {routes as rankingsRoutes} from './routes/rankings/rankings.router.js';
 import * as mongooseService from './services/mongoose.service.js';
 
 dotenv.config(); // config .env file
@@ -17,6 +19,8 @@ app.use(cors()); // set cors policy
 
 
 app.use(userRoutes.root, userRouter);
+app.use(matchRoutes.root, matchRouter);
+app.use(rankingsRoutes.root, rankingsRouter);
 
 // Swagger initialization
 const options = {

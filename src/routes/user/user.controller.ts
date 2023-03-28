@@ -8,7 +8,7 @@ export async function create(req: Request, res: Response) {
         const user = await User.create(req.body);
 
         if(!user) throw new InternalAPIError(`Error while creating the new user on the database`, 500);
-        res.status(200).send("OK");
+        res.status(200).send({_id: user._id});
     } catch (e: any) {
         console.error(e.toString());
 

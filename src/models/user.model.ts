@@ -1,11 +1,15 @@
 import mongoose from 'mongoose';
 
-export const userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     nickname: {
         type: String,
         required: true,
         unique: true
     },
+    bestTiming: {
+        type: Number,
+        required: false
+    }
 }, {versionKey: false});
 
 const User = mongoose.model('User', userSchema);
