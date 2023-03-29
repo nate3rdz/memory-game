@@ -1,12 +1,11 @@
 import {z} from 'zod';
 
-export const validator = z.object({
+export const createValidator = z.object({
     nickname: z.string()
 });
 
 export const updateValidator = z.object({
-    nickname: z.string().optional(),
-    bestTiming: z.number().optional()
+    nickname: z.string()
 });
 
 export const searchByIdValidator = z.object({

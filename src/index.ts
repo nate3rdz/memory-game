@@ -37,7 +37,7 @@ const options = {
             },
         ],
     },
-    apis: ['./api/routes/*/*Router.js', './api/routes/*/*/*Router.js', './dist/api/routes/*/*Router.js', './dist/api/routes/*/*/*Router.js'],
+    apis: ['./routes/*/*.router.js', './dist/routes/*/*.router.js'],
 };
 
 // generates swagger documentation

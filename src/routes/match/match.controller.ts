@@ -56,8 +56,6 @@ export async function get(req: Request, res: Response) {
 
 export async function patch(req: Request, res: Response) {
     try {
-        if(!mongoose.isValidObjectId(req.params.id)) throw new InternalAPIError('Invalid match id', 400);
-
         const match = await matchService.updateMatch(req.params.id, req.body.closedAt);
 
         res.status(200).send("Acknowledged");
