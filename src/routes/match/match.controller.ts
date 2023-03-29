@@ -3,17 +3,18 @@ import Match from '../../models/match.model.js';
 import InternalAPIError from "../../classes/InternalAPIError.js";
 import mongoose, {UpdateWriteOpResult} from "mongoose";
 import User from "../../models/user.model.js";
+import * as matchService from "../../services/match.service.js";
 
 export async function create(req: Request, res: Response) {
     try {
         const userSrc = await User.findById(req.body.user);
         if(!userSrc) throw new InternalAPIError('The selected user does not exist.', 404);
 
-        // TODO: add a cron job at the start of the server and every 6h to check it the user has quitted the session
+        // TODO: add a cron job at the start of the server and every 6h to check if the user has quitted the session
         const matchOnCourse: any[] = await Match.find({closed: false, user: req.body.user});
         if(matchOnCourse.length > 0) throw new InternalAPIError('You\'re already having a match! stop the last one before creating another one.', 409);
 
-        const match = await Match.create({...req.body, createdAt: Date.now()});
+        const match = await Match.create({...req.body, createdAt: new Date()});
 
         if(!match) throw new InternalAPIError(`Error while creating the new match on the database`, 500);
         res.status(200).send(match);
@@ -57,10 +58,9 @@ export async function patch(req: Request, res: Response) {
     try {
         if(!mongoose.isValidObjectId(req.params.id)) throw new InternalAPIError('Invalid match id', 400);
 
-        const match: UpdateWriteOpResult = await Match.updateOne({_id: req.params.id}, {$set: req.body});
-        if(match.matchedCount < 1) throw new InternalAPIError('Match not found', 404);
+        const match = await matchService.updateMatch(req.params.id, req.body.closedAt);
 
-        res.status((match.modifiedCount > 0) ? 200 : 304).send("Acknowledged");
+        res.status(200).send("Acknowledged");
     } catch (e) {
         console.error(e.toString());
 

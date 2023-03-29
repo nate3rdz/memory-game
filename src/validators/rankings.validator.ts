@@ -8,3 +8,8 @@ export const updateTimingValidator = z.object({
 export const searchByIdValidator = z.object({
     id: z.string()
 }).refine((value) => mongoose.isValidObjectId(value.id), {message: "An invalid id was given."});
+
+export const paginationValidator = z.object({
+    skip: z.string().optional(),
+    limit: z.string().optional()
+});

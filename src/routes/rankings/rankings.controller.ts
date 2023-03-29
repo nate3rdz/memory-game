@@ -1,63 +1,50 @@
 import {Request, Response} from 'express';
 import InternalAPIError from "../../classes/InternalAPIError.js";
-import {retrieveRankingsByUser, updateUserTiming} from "../../services/rankings.service.js";
-import Match from "../../models/match.model.js";
+import * as rankingsService from "../../services/rankings.service.js";
+import IRankedUser from "../../interfaces/IRankedUser";
 import User from "../../models/user.model.js";
-
-/**
- * Atomically updates user timing - The atomicity is needed in order to give a fully synchronized ranking table, to handle the case in which I'm watching the ranking in the same moment that it's under update, and so I'm watching a wrong ranking.
- * @param req Request's object
- * @param res Response's object
- */
-export async function updateUserBestTiming(req: Request, res: Response) {
-    try {
-        const match = await Match.findById(req.body._id);
-        if(!match) throw new InternalAPIError('Match not found', 404);
-        if(!match.closed) throw new InternalAPIError('The selected match is not closed yet.', 409);
-
-        // atomically updates user's timing
-        await updateUserTiming(match); // No result collecting is needed, since if something goes bad, it returns an error that will be handled by the controller's catch.
-
-        res.status(200).send("OK");
-    } catch (e) {
-        console.error(e.toString());
-
-        if(e instanceof InternalAPIError) return res.status(e.status).send(e.message);
-        else return res.status(500).send('Internal server error');
-    }
-}
 
 export async function getUserRanking(req: Request, res: Response) {
     try {
         // This operation might be refactored. With millions of users it can be a heavy-weight for the servers.
 
+        // First, check if the user is ranked
+        const user = await User.findById(req.params.id);
+        if(!user) throw new InternalAPIError('This user doesn\'t exist!', 404);
+        if(user.bestTiming > Number(process.env.MAX_RANKING_TIMING)) return res.status(200).send("The user is not ranked.");
+
         // Retrieve a raw rank list
-        const rankings = (await retrieveRankingsByUser(req.params.id))[0];
+        const rankings = (await rankingsService.retrieveRankingsByUser(req.params.id))[0];
         const size = rankings.target.length+rankings.lower.length+rankings.greater.length;
-        const midSize = rankings.target.length+rankings.lower.length;
 
-        let tmpCounter = 0;
         const result = [];
+        const removed: number[] = [0, 0, 0];
 
-        for(let i = 1; i <= size; i++) {
-            if(i <= rankings.lower.length) { // I'm still editing the lower
-                if(i > rankings.lower.length-3){
-                    rankings.lower[i-1].rank = i;
-                    result.push(rankings.lower[i-1]);
-                } // I'll keep track only of the ranks of the 3 players on the top of the target, of the target and of the 3 players on the bottom!
-            } else if(i >= rankings.lower.length && i <= midSize) {
-                rankings.target[0].rank = i;
-                result.push(rankings.target[0]);
-            }
-            else {
-                if(i <= midSize+3) {
-                    rankings.greater[tmpCounter].rank = i;
-                    result.push(rankings.greater[tmpCounter]);
-                    tmpCounter++;
-                }
+        for(let i = 0; i < size; i++) {
+            if(rankings.lower.length > 0) { // if the lower array has elements..
+                result.push({
+                    ...rankings.lower[i-removed[0]],
+                    rank: i+1
+                });
+                rankings.lower.shift();
+                removed[0]++;
+            } else if(rankings.target.length > 0 && removed[2] < 1) { // if the target array has elements..
+                result.push({
+                    ...rankings.target[0],
+                    rank: i+1
+                });
+                removed[2]++;
+            } else if(rankings.greater.length > 0) { // if the greater array has elements..
+                result.push({
+                    ...rankings.greater[i-removed[1]-1], // -1 because of the target offset! we "lost" an idx while putting the target
+                    rank: i+1
+                });
+                rankings.greater.shift();
+                removed[1]++;
             }
         }
 
+        // The selected user will be the element at the pos. Math.floor(result.length/2)+1 (in the middle!)
         return res.status(200).send(result);
     } catch (e) {
         console.error(e.toString());
@@ -67,13 +54,28 @@ export async function getUserRanking(req: Request, res: Response) {
     }
 }
 
+export async function getGlobalRankings(req: Request, res: Response) {
+    try {
+        const rankings = await rankingsService.retrieveGlobalRankings(Number(req.query.skip), Number(req.query.limit)-1);
+        const result: IRankedUser[] = [];
 
+        const skip = Number(req.query.skip) || 0;
+        const limit = Number(req.query.limit) || 0;
 
+        for(let i = 0; i < rankings.length-skip; i++){
+            result.push({
+                _id: rankings[i]._id,
+                nickname: rankings[i].nickname,
+                bestTiming: rankings[i].bestTiming,
+                rank: i+skip+1
+            });
+        }
 
-// Ogni qual volta finisce un match vi è il ricalcolo delle classifiche
-// Algoritmo di ricalcolo:
-/**
- * 1) Trovo il punto in cui infilare il nuovo record - e.g. ho un record da infilare fra il rank 4 ed il rank 5, perciò questo diventerà il nuovo rank 5
- * 2) Quelli sotto il rank 5 dovranno essere tutti quanti de incrementati di 1
- *
- */
+        res.status(200).send(result);
+    } catch (e) {
+        console.error(e.toString());
+
+        if(e instanceof InternalAPIError) return res.status(e.status).send(e.message);
+        else return res.status(500).send('Internal server error');
+    }
+}

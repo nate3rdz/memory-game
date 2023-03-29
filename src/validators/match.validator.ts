@@ -7,9 +7,8 @@ export const validator = z.object({
 });
 
 export const editValidator = z.object({
-    closed: z.boolean().optional(),
-    closedAt: z.number().optional()
-});
+    closedAt: z.number()
+}).refine((match) => match.closedAt <= Date.now());
 
 export const searchByIdValidator = z.object({
     id: z.string()

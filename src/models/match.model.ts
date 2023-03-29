@@ -12,11 +12,11 @@ const matchSchema = new mongoose.Schema({
         default: false
     },
     createdAt: {
-        type: Number,
+        type: Date,
         required: true
     },
     closedAt: {
-        type: Number
+        type: Date
     }
 }, {versionKey: false});
 

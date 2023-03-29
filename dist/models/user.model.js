@@ -8,6 +8,10 @@ const userSchema = new mongoose.Schema({
     bestTiming: {
         type: Number,
         required: false
+    },
+    bestMatchDate: {
+        type: Date,
+        required: false
     }
 }, { versionKey: false });
 const User = mongoose.model('User', userSchema);
