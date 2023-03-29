@@ -1,1 +1,0 @@
-{"version":3,"file":"InternalAPIError.js","sourceRoot":"","sources":["../../src/classes/InternalAPIError.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,OAAO,OAAO,gBAAiB,SAAQ,KAAK;IACxC,MAAM,CAAC;IACP,OAAO,CAAC;IAEf,YAAY,OAAe,EAAE,MAAc;QACvC,KAAK,CAAC,OAAO,CAAC,CAAC;QAEf,IAAI,CAAC,OAAO,GAAG,OAAO,CAAC;QACvB,IAAI,CAAC,MAAM,GAAG,MAAM,CAAC;IACzB,CAAC;CACJ"}
