@@ -18,31 +18,36 @@ export async function getUserRanking(req: Request, res: Response) {
         const size = rankings.target.length+rankings.lower.length+rankings.greater.length;
 
         const result = [];
-
-        const addedResults: number[] = [0, 0, 0];
-        const iterativeIdx: number[] = [0, 0, 0];
+        let targetInserted = false;
+        let insertedCount: number = 0;
 
         for(let i = 0; i < size; i++) {
-            if(rankings.lower.length > 0 && addedResults[0] < 3) { // if the lower array has elements..
-                result.push({
-                    ...rankings.lower[(rankings.lower.length-1)-3+i],
-                    rank: i+1
-                });
-                addedResults[0]++;
-            } else if(rankings.target.length > 0 && addedResults[1] < 1) { // if the target array has elements..
-                console.log('caso 2');
+            if(rankings.lower.length > 0) { // if the lower array has elements and I'm at least 3 positions near the user
+                if(rankings.lower.length-3 >= i) {
+                    rankings.lower.shift();
+                }
+                else {
+                    result.push({
+                        ...rankings.lower[0],
+                        rank: i+1
+                    });
+                    insertedCount++;
+                    rankings.lower.shift();
+                }
+            } else if(rankings.target.length > 0 && !targetInserted) { // if the target array has elements..
                 result.push({
                     ...rankings.target[0],
                     rank: i+1
                 });
-                addedResults[1]++;
-            } else if(rankings.greater.length > 0 && addedResults[2] < 3) { // if the greater array has elements..
-                console.log('caso 3');
+                targetInserted = true;
+                insertedCount++;
+            } else if(rankings.greater.length > 0 && rankings.greater[0] && insertedCount < 7) { // if the greater array has elements, and the first element of the array is not null, and if the result length
                 result.push({
-                    ...rankings.greater[(rankings.greater.length-1)+addedResults[2]], // -1 because of the target offset! we "lost" an idx while putting the target
+                    ...rankings.greater[0], // -1 because of the target offset! we "lost" an idx while putting the target
                     rank: i+1
                 });
-                addedResults[2]++;
+                rankings.greater.shift();
+                insertedCount++;
             }
         }
 

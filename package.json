@@ -2,7 +2,7 @@
   "name": "aryel-memory-game",
   "version": "1.0.0",
   "scripts": {
-    "prebuild": "tslint -c ../aryel-memory-game/tslint.json -p tsconfig.json --fix",
+    "prebuild": "tslint -c ./tslint.json -p tsconfig.json --fix",
     "build": "tsc",
     "prestart": "yarn run build",
     "start": "nodemon --experimental-json-modules dist/index.js"
