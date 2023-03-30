@@ -58,7 +58,7 @@ export async function patch(req: Request, res: Response) {
     try {
         const match = await matchService.updateMatch(req.params.id, req.body.closedAt);
 
-        res.status(200).send("Acknowledged");
+        res.status(200).send();
     } catch (e) {
         console.error(e.toString());
 

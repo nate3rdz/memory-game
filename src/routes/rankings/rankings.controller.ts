@@ -18,29 +18,31 @@ export async function getUserRanking(req: Request, res: Response) {
         const size = rankings.target.length+rankings.lower.length+rankings.greater.length;
 
         const result = [];
-        const removed: number[] = [0, 0, 0];
+
+        const addedResults: number[] = [0, 0, 0];
+        const iterativeIdx: number[] = [0, 0, 0];
 
         for(let i = 0; i < size; i++) {
-            if(rankings.lower.length > 0) { // if the lower array has elements..
+            if(rankings.lower.length > 0 && addedResults[0] < 3) { // if the lower array has elements..
                 result.push({
-                    ...rankings.lower[i-removed[0]],
+                    ...rankings.lower[(rankings.lower.length-1)-3+i],
                     rank: i+1
                 });
-                rankings.lower.shift();
-                removed[0]++;
-            } else if(rankings.target.length > 0 && removed[2] < 1) { // if the target array has elements..
+                addedResults[0]++;
+            } else if(rankings.target.length > 0 && addedResults[1] < 1) { // if the target array has elements..
+                console.log('caso 2');
                 result.push({
                     ...rankings.target[0],
                     rank: i+1
                 });
-                removed[2]++;
-            } else if(rankings.greater.length > 0) { // if the greater array has elements..
+                addedResults[1]++;
+            } else if(rankings.greater.length > 0 && addedResults[2] < 3) { // if the greater array has elements..
+                console.log('caso 3');
                 result.push({
-                    ...rankings.greater[i-removed[1]-1], // -1 because of the target offset! we "lost" an idx while putting the target
+                    ...rankings.greater[(rankings.greater.length-1)+addedResults[2]], // -1 because of the target offset! we "lost" an idx while putting the target
                     rank: i+1
                 });
-                rankings.greater.shift();
-                removed[1]++;
+                addedResults[2]++;
             }
         }
 
