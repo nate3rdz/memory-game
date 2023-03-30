@@ -15,44 +15,38 @@ export async function getUserRanking(req: Request, res: Response) {
 
         // Retrieve a raw rank list
         const rankings = (await rankingsService.retrieveRankingsByUser(req.params.id))[0];
-        const size = rankings.target.length+rankings.lower.length+rankings.greater.length;
 
-        const result = [];
-        let targetInserted = false;
-        let insertedCount: number = 0;
+        const result: any[][] = [[], []];
+        let lastRankBeforeTarget = 0;
 
-        for(let i = 0; i < size; i++) {
-            if(rankings.lower.length > 0) { // if the lower array has elements and I'm at least 3 positions near the user
-                if(rankings.lower.length-3 >= i) {
-                    rankings.lower.shift();
-                }
-                else {
-                    result.push({
-                        ...rankings.lower[0],
-                        rank: i+1
+        for(let i = 0; i < 3; i++) {
+            if(rankings.lower.length > 0) {
+                if(rankings.lower[(rankings.lower.length-1)-i]) {
+                    result[0].unshift({
+                        ...rankings.lower[(rankings.lower.length-1)-i],
+                        rank: rankings.lower.length-i
                     });
-                    insertedCount++;
-                    rankings.lower.shift();
-                }
-            } else if(rankings.target.length > 0 && !targetInserted) { // if the target array has elements..
-                result.push({
-                    ...rankings.target[0],
-                    rank: i+1
-                });
-                targetInserted = true;
-                insertedCount++;
-            } else if(rankings.greater.length > 0 && rankings.greater[0] && insertedCount < 7) { // if the greater array has elements, and the first element of the array is not null, and if the result length
-                result.push({
-                    ...rankings.greater[0], // -1 because of the target offset! we "lost" an idx while putting the target
-                    rank: i+1
-                });
-                rankings.greater.shift();
-                insertedCount++;
+                    lastRankBeforeTarget = (lastRankBeforeTarget > rankings.lower.length-i) ? lastRankBeforeTarget : rankings.lower.length-i;
+                } // se posso leggere qualcosa da lower..
+            }
+            if(rankings.greater.length > 0) {
+                if(!rankings.greater[i]) continue;
+
+                result[1].push({
+                    ...rankings.greater[i],
+                    rank: rankings.lower.length+(i+1)+1
+                })
             }
         }
 
+        result[0].push({
+            ...rankings.target[0],
+            rank: lastRankBeforeTarget+1
+        });
+        result[0].push(...result[1]);
+
         // The selected user will be the element at the pos. Math.floor(result.length/2)+1 (in the middle!)
-        return res.status(200).send(result);
+        return res.status(200).send(result[0]);
     } catch (e) {
         console.error(e.toString());
 

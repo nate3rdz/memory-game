@@ -3,10 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="43cdd338-89f1-4c64-aee9-9ecf5301575d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/routes/rankings/rankings.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/rankings/rankings.controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +57,7 @@
     "WebServerToolWindowFactoryState": "false",
     "javascript.nodejs.core.library.configured.version": "18.10.0",
     "javascript.nodejs.core.library.typings.version": "18.15.7",
-    "last_opened_file_path": "/home/nate3rdz/work/aryel/memory-game",
+    "last_opened_file_path": "/home/nate3rdz/work/aryel/memory-game-frontend",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_interpreter_path": "wsl://Ubuntu@/usr/bin/node",
     "nodejs_package_manager_path": "npm",
@@ -98,7 +95,7 @@
       <workItem from="1680048768519" duration="311000" />
       <workItem from="1680125988219" duration="4727000" />
       <workItem from="1680134069126" duration="4052000" />
-      <workItem from="1680194759020" duration="3913000" />
+      <workItem from="1680194759020" duration="6319000" />
     </task>
     <servers />
   </component>
