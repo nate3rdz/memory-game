@@ -5,7 +5,8 @@
     "prebuild": "tslint -c ./tslint.json -p tsconfig.json --fix",
     "build": "tsc",
     "prestart": "yarn run build",
-    "start": "nodemon --experimental-json-modules dist/index.js"
+    "dev": "nodemon --experimental-json-modules dist/index.js",
+    "start": "node --experimental-json-modules dist/index.js"
   },
   "description": "Proof of concept for Aryel",
   "main": "index.js",
