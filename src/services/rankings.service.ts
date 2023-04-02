@@ -32,6 +32,7 @@ export async function retrieveRankingsByUser(user: string): Promise<any> {
         }, {
             '$match': {
                 'users.bestTiming': {
+                    '$exists': true,
                     '$lte': Number(process.env.MAX_RANKING_TIMING) // If the bestTiming of the user is not < MIN_RANKING_TIMING, the user won't be ranked at all
                 }
             }
