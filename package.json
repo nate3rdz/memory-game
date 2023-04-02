@@ -4,7 +4,6 @@
   "scripts": {
     "prebuild": "tslint -c ./tslint.json -p tsconfig.json --fix",
     "build": "tsc",
-    "build-ci": "tsc && copyfiles web.config dist && copyfiles package.json dist && copyfiles -u 1 node_modules/**/* dist/node_modules/",
     "prestart": "yarn run build",
     "dev": "nodemon --experimental-json-modules dist/index.js",
     "start": "node --experimental-json-modules dist/index.js"

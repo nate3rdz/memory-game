@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="43cdd338-89f1-4c64-aee9-9ecf5301575d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/rankings.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/rankings.service.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,7 +97,7 @@
       <workItem from="1680134069126" duration="4052000" />
       <workItem from="1680194759020" duration="6428000" />
       <workItem from="1680383468812" duration="997000" />
-      <workItem from="1680422138957" duration="1058000" />
+      <workItem from="1680422138957" duration="2274000" />
     </task>
     <servers />
   </component>
